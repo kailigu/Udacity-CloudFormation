@@ -1,0 +1,33 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "UdacityStackProject2"
+    },
+
+    {
+        "ParameterKey": "ProjectName",
+        "ParameterValue": "UdacityProject2"
+    },
+
+    {
+        "ParameterKey": "EC2InstanceProfileRole",
+        "ParameterValue": "arn:aws:iam::278307901407:instance-profile/IAM-EC2-S3-Role"
+    },
+
+    {
+        "ParameterKey":"VpcCIDR",
+        "ParameterValue": "172.24.0.0/16"
+    },
+
+    {
+        "ParameterKey": "PublicSubnet1CIDR",
+        "ParameterValue": "172.24.1.0/24"
+    },
+    
+    {
+        "ParameterKey": "PublicSubnet2CIDR",
+        "ParameterValue": "172.24.2.0/24"
+    }
+
+    
+]

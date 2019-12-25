@@ -1,0 +1,201 @@
+Description:
+  < Sasho Petrovski
+  Udacity Project 2
+
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names.
+    Type: String
+    
+  ProjectName:
+    Description: The project name you're working on.
+    Type: String
+  
+  EC2InstanceProfileRole:
+    Description: IAM Role profile to be used when launching an EC2 Instance.
+    Type: String
+  
+  VpcCIDR: 
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+
+  PublicSubnet1CIDR:
+    Description: IP range (CIDR notation) for the public subnet in the first availability zone.
+    Type: String
+
+  PublicSubnet2CIDR:
+    Description: IP range (CIDR notation) for the public subnet in the first availability zone.
+    Type: String
+
+    
+
+
+Resources:
+
+  # Network Architecture
+ 
+  # Virtual Private Cloud
+  VPC: 
+      Type: AWS::EC2::VPC 
+      Properties:
+          CidrBlock: !Ref VpcCIDR # References the params.json file
+          EnableDnsHostnames: true
+          Tags: 
+              - 
+                Key: ProjectName
+                Value: !Ref ProjectName
+              - 
+                Key: EntityName
+                Value: Virtual Private Cloud
+              -
+                Key: EntityType
+                Value: Virtual Private Cloud
+              
+
+  # Allows outside connection to your VPC
+  # Allows inbound and outbound traffic from the outside world into your Private Cloud.
+  InternetGateway:
+      Type: AWS::EC2::InternetGateway
+      Properties:
+          Tags:
+              - 
+                Key: ProjectName
+                Value: !Ref ProjectName
+
+# Internet Gateway
+  # It's important to note when connecting an Internet Gateway to a VPC, 
+  # we need to define an additional resource called InternetGatewayAttachment. 
+  # This attachment references both the VPC and the InternetGateway.            
+  InternetGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+          InternetGatewayId: !Ref InternetGateway
+          VpcId: !Ref VPC
+
+  # Public Subnet 1
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+        VpcId: !Ref VPC
+        CidrBlock: !Ref PublicSubnet1CIDR
+        MapPublicIpOnLaunch: true
+        Tags:
+          - 
+            Key: ProjectName
+            Value: UdacityProject2
+          - 
+            Key: EntityName
+            Value: PublicSubnet1
+          -
+            Key: EntityType
+            Value: Subnet
+          -
+            Key: EntityAttribute
+            Value: Public
+  
+  # Public Subnet 2 
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+        VpcId: !Ref VPC
+        CidrBlock: !Ref PublicSubnet2CIDR
+        MapPublicIpOnLaunch: true
+        Tags:
+          - 
+            Key: ProjectName
+            Value: UdacityProject2
+          - 
+            Key: EntityName
+            Value: PublicSubnet2
+          -
+            Key: EntityType
+            Value: Subnet
+          -
+            Key: EntityAttribute
+            Value: Public
+
+ # Route Tables
+
+  # Public Route Table
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+        VpcId: !Ref VPC
+        Tags: 
+            - Key: ProjectName 
+              Value: !Ref ProjectName
+            - Key: EntityType
+              Value: RouteTable  
+
+  # Route to gateway 
+  DefaultPublicRoute: 
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties: 
+        RouteTableId: !Ref PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref InternetGateway
+
+  # Associate Public Subnet 1 to the Route Table
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+        RouteTableId: !Ref PublicRouteTable
+        SubnetId: !Ref PublicSubnet1
+  
+  # Associate Public Subnet 2 to the Route Table
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+        RouteTableId: !Ref PublicRouteTable
+        SubnetId: !Ref PublicSubnet2
+
+  # Security group for EC2 Instance.      
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: EC2 Security Group
+      GroupName: EC2-SecurityGroup
+      VpcId: !Ref VPC
+      # Outbound Rules
+      SecurityGroupEgress: 
+      - IpProtocol: TCP
+        FromPort: 0
+        ToPort: 65535 
+        CidrIp: 0.0.0.0/0
+      # Inbound Rules  
+      SecurityGroupIngress: 
+      - IpProtocol: TCP
+        FromPort: 22
+        ToPort: 22  
+        CidrIp: 0.0.0.0/0 # Should specifiy the specific IP address.
+      Tags: 
+        - Key: ProjectName
+          Value: !Ref ProjectName
+        - Key: EntityType
+          Value: SecurityGroup  
+    
+# EC2 Launch Configuration
+  WebAppLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt-get update -y
+          apt-get install unzip awscli -y
+          apt-get install apache2 -y
+          systemctl start apache2.service
+          cd /var/www/html
+          aws s3 cp s3://udacity-demo-1/udacity.zip .
+          unzip -o udacity.zip
+      ImageId: ami-07e6faad15db3b345
+      IamInstanceProfile: !Ref EC2InstanceProfileRole
+      SecurityGroups:
+      - Ref: WebServerSecurityGroup
+      InstanceType: t2.medium
+      BlockDeviceMappings:
+      - DeviceName: "/dev/sdk"
+        Ebs:
+          VolumeSize: '10'
+        
