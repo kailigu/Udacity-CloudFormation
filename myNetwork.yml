@@ -198,4 +198,16 @@ Resources:
       - DeviceName: "/dev/sdk"
         Ebs:
           VolumeSize: '10'
+  
+  # # AutoScaling Group        
+  # WebAppGroup:
+    # Type: AWS::AutoScaling::AutoScalingGroup
+    # Properties:
+      # # A list of subnet IDs for a virtual private cloud (VPC
+      # VPCZoneIdentifier:
+
+      # # The launch Configuration Template.
+      # LaunchConfigurationName: !Ref WebAppLaunchConfig
+      # MinSize: '2'
+      # MaxSize: '6'
         
