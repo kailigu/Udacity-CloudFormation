@@ -27,6 +27,10 @@ Parameters:
     Description: IP range (CIDR notation) for the public subnet in the first availability zone.
     Type: String
 
+  EC2AccessKeyPair:
+    Description: The Key Pair name used to access the EC2 via SSH.
+    Type: String
+
     
 
 
@@ -179,6 +183,7 @@ Resources:
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
+      KeyName: !Ref EC2AccessKeyPair
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -199,15 +204,14 @@ Resources:
         Ebs:
           VolumeSize: '10'
   
-  # # AutoScaling Group        
-  # WebAppGroup:
-    # Type: AWS::AutoScaling::AutoScalingGroup
-    # Properties:
-      # # A list of subnet IDs for a virtual private cloud (VPC
-      # VPCZoneIdentifier:
+  # AutoScaling Group        
+  WebAppGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      # A list of subnet IDs for a virtual private cloud (VPC
+      VPCZoneIdentifier: [subnet-0c0dee60d3e83d8f7] # This needs to be fixed.
+      # The launch Configuration Template.
+      LaunchConfigurationName: !Ref WebAppLaunchConfig
+      MinSize: '2'
+      MaxSize: '6'
 
-      # # The launch Configuration Template.
-      # LaunchConfigurationName: !Ref WebAppLaunchConfig
-      # MinSize: '2'
-      # MaxSize: '6'
-        
