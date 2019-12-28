@@ -1,0 +1,21 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "UdacityStackProject2"
+    },
+
+    {
+        "ParameterKey": "ProjectName",
+        "ParameterValue": "UdacityProject2"
+    },
+    
+    {
+        "ParameterKey": "EC2AccessKeyPair",
+        "ParameterValue": "Udacity-EC2-VM1"
+    },
+
+    {
+        "ParameterKey": "EC2InstanceProfileRole",
+        "ParameterValue": "arn:aws:iam::278307901407:instance-profile/IAM-EC2-S3-Role"
+    }
+]

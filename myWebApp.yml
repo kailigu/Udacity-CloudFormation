@@ -1,3 +1,26 @@
+# CloudFormation Script
+# Project: UdacityProject2
+# Created by: Sasho Petrovski
+
+# Web application script
+
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names.
+    Type: String
+    
+  ProjectName:
+    Description: The project name you're working on.
+    Type: String
+
+  EC2AccessKeyPair:
+    Description: The Key Pair name used to access the EC2 via SSH.
+    Type: String
+
+  EC2InstanceProfileRole:
+    Description: IAM Role profile to be used when launching an EC2 Instance.
+    Type: String
+
 Resources:
 # EC2 Launch Configuration
   WebAppLaunchConfig:

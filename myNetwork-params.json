@@ -10,11 +10,6 @@
     },
 
     {
-        "ParameterKey": "EC2InstanceProfileRole",
-        "ParameterValue": "arn:aws:iam::278307901407:instance-profile/IAM-EC2-S3-Role"
-    },
-
-    {
         "ParameterKey":"VpcCIDR",
         "ParameterValue": "172.24.0.0/16"
     },
@@ -29,10 +24,7 @@
         "ParameterValue": "172.24.2.0/24"
     },
 
-    {
-        "ParameterKey": "EC2AccessKeyPair",
-        "ParameterValue": "Udacity-EC2-VM1"
-    }
+   
     
 
     
