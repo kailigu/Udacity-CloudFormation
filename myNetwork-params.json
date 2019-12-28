@@ -22,10 +22,6 @@
     {
         "ParameterKey": "PublicSubnet2CIDR",
         "ParameterValue": "172.24.2.0/24"
-    },
-
-   
-    
-
-    
+    }
+        
 ]
