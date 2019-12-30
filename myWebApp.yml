@@ -3,6 +3,10 @@
 # Created by: Sasho Petrovski
 
 # Web application script
+Description:
+  < Sasho Petrovski
+  Udacity Project 2
+  Website Application
 
 Parameters:
   EnvironmentName:
@@ -41,7 +45,7 @@ Resources:
       IamInstanceProfile: !Ref EC2InstanceProfileRole
       SecurityGroups:
       - Fn::ImportValue: 
-          !Sub "${EnvironmentName}-WebSecurityGroupID"
+          !Sub "${ProjectName}-WebSecurityGroupID"
       InstanceType: t2.medium
       BlockDeviceMappings:
       - DeviceName: "/dev/sdk"
@@ -55,7 +59,7 @@ Resources:
       # A list of subnet IDs for a virtual private cloud (VPC
       VPCZoneIdentifier: 
         Fn::ImportValue: 
-          !Sub "${EnvironmentName}-Public-Subnet-CIDRs"
+          Fn::Sub: "${ProjectName}-Public-Subnet-CIDRs"
       # The launch Configuration Template.
       LaunchConfigurationName: !Ref WebAppLaunchConfig
       MinSize: '2'

@@ -28,9 +28,9 @@
 
 
 param (
-        
+        [Parameter(Mandatory=$true)][string]$StackName,
         [Parameter(Mandatory=$true)][string]$TemplateBodyFile,
         [Parameter(Mandatory=$true)][string]$parametersFile
 )
 
-aws cloudformation update-stack --stack-name UdacityStackProject2 --template-body file://$TemplateBodyFile --parameters file://$parametersFile --region=ap-southeast-2
+aws cloudformation update-stack --stack-name $StackName --template-body file://$TemplateBodyFile --parameters file://$parametersFile --region=ap-southeast-2
