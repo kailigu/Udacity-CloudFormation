@@ -25,6 +25,15 @@ Parameters:
     Description: IAM Role profile to be used when launching an EC2 Instance.
     Type: String
 
+  PublicSubnet1CIDR:
+    Description: CIDR range of Public Subnet 1
+    Type: String
+
+  PublicSubnet2CIDR:
+    Description: CIDR range of Public Subnet 2
+    Type: String
+   
+   
 Resources:
 # EC2 Launch Configuration
   WebAppLaunchConfig:
@@ -57,12 +66,9 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       # A list of subnet IDs for a virtual private cloud (VPC
-      VPCZoneIdentifier: 
-        Fn::ImportValue: 
-          Fn::Sub: "${ProjectName}-Public-Subnet-CIDRs"
-      # The launch Configuration Template.
+      VPCZoneIdentifier: !Ref [PublicSubnet1CIDR]
+        # Fn::ImportValue: !Sub "UdacityProject2-Public-Subnet-1-CIDR"
+        # Fn::Join: ['', [ '[' , Fn::ImportValue: !Sub '${ProjectName}-Public-Subnet-CIDRs', ']']]
       LaunchConfigurationName: !Ref WebAppLaunchConfig
       MinSize: '2'
       MaxSize: '6'
-      
-

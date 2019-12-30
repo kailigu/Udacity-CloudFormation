@@ -199,6 +199,18 @@ Outputs:
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-CIDRs
 
+  PublicSubnet1CIDR:
+    Description: Public Subnet 1 CIDR
+    Value: !Ref PublicSubnet1CIDR
+    Export:
+      Name: !Sub ${ProjectName}-Public-Subnet-1-CIDR
+
+  PublicSubnet2CIDR:
+    Description: Public Subnet 2 CIDR
+    Value: !Ref PublicSubnet2CIDR
+    Export:
+      Name: !Sub ${ProjectName}-Public-Subnet-2-CIDR
+
   WebServerSecurityGroup:
     Description: Security group to be attached to an EC2 Instance.
     Value: !Ref WebServerSecurityGroup
