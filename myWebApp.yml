@@ -66,7 +66,7 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       # A list of subnet IDs for a virtual private cloud (VPC
-      VPCZoneIdentifier: !Ref [PublicSubnet1CIDR]
+      VPCZoneIdentifier: [172.24.1.0/24]
         # Fn::ImportValue: !Sub "UdacityProject2-Public-Subnet-1-CIDR"
         # Fn::Join: ['', [ '[' , Fn::ImportValue: !Sub '${ProjectName}-Public-Subnet-CIDRs', ']']]
       LaunchConfigurationName: !Ref WebAppLaunchConfig
