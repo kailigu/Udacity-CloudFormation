@@ -155,6 +155,23 @@ Resources:
         RouteTableId: !Ref PublicRouteTable
         SubnetId: !Ref PublicSubnet2
 
+  # Load Balancer Security Group
+  LBSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP To out Load Balancer
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: TCP
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: TCP
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0                                                                                        
+
   # Security group for EC2 Instance.      
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -216,4 +233,10 @@ Outputs:
     Value: !Ref WebServerSecurityGroup
     Export:
       Name: !Sub ${ProjectName}-WebSecurityGroupID
+
+  LBSecurityGroup:
+    Description: Security Group to be attached to the Load Balancer
+    Value: !Ref LBSecGroup    
+    Export:
+      Name: !Sub ${ProjectName}-LBSecurityGroupID
     
