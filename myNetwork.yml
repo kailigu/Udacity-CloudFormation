@@ -1,5 +1,6 @@
 # CloudFormation Script
 # Project: UdacityProject2
+# Stack Name: UdacityStackProject2-Network
 # Created by: Sasho Petrovski
 
 # Network architecture script.
@@ -82,6 +83,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
         VpcId: !Ref VPC
+        AvailabilityZone: !Select [ 0, !GetAZs '' ]
         CidrBlock: !Ref PublicSubnet1CIDR
         MapPublicIpOnLaunch: true
         Tags:
@@ -104,6 +106,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
         VpcId: !Ref VPC
+        AvailabilityZone: !Select [ 1, !GetAZs '' ]
         CidrBlock: !Ref PublicSubnet2CIDR
         MapPublicIpOnLaunch: true
         Tags:
@@ -222,11 +225,24 @@ Outputs:
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-1-CIDR
 
+  PublicSubnet1ID:
+    Description: Public Subnet 1 ID
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub ${ProjectName}-Public-Subnet-1-ID
+
   PublicSubnet2CIDR:
     Description: Public Subnet 2 CIDR
     Value: !Ref PublicSubnet2CIDR
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-2-CIDR
+
+  
+  PublicSubnet2ID:
+    Description: Public Subnet 2 ID
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub ${ProjectName}-Public-Subnet-2-ID
 
   WebServerSecurityGroup:
     Description: Security group to be attached to an EC2 Instance.
