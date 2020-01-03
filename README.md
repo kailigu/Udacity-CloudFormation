@@ -14,6 +14,11 @@ This needs to be done in an automated fashion so that the infrastructure can be 
 ## Result:
 The ability to create or destroy an entire infrastructure using CloudFormation scripts which builds the Network and Application Infrastructure to deploy an application on an Ubuntu 18 Server.
 
+--
+
+![alt text](https://github.com/sashpetrov/Udacity-CloudFormation/blob/master/Site.png "Site")
+
+
 ### References:
 https://www.udacity.com/
 Nanodegree Program: Cloud Dev Ops Engineer
