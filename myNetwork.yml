@@ -44,7 +44,7 @@ Parameters:
 
 
 Resources:
- 
+
   # Virtual Private Cloud
   VPC: 
       Type: AWS::EC2::VPC 
@@ -344,6 +344,18 @@ Outputs:
     Value: !Ref PublicSubnet2CIDR
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-2-CIDR
+  
+  PublicSubnet1ID:
+    Description: Public Subnet 1 ID
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub ${ProjectName}-Public-Subnet-1-ID
+  
+  PublicSubnet2ID:
+    Description: Public Subnet 2 ID
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub ${ProjectName}-Public-Subnet-2-ID
 
   PrivateSubnets:
     Description: A list of the private subnet IDs
