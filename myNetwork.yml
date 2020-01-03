@@ -44,8 +44,6 @@ Parameters:
 
 
 Resources:
-
-  # Network Architecture
  
   # Virtual Private Cloud
   VPC: 
@@ -75,17 +73,16 @@ Resources:
                 Key: ProjectName
                 Value: !Ref ProjectName
 
-# Internet Gateway
-  # It's important to note when connecting an Internet Gateway to a VPC, 
-  # we need to define an additional resource called InternetGatewayAttachment. 
-  # This attachment references both the VPC and the InternetGateway.            
+  # Internet Gateway        
   InternetGatewayAttachment:
       Type: AWS::EC2::VPCGatewayAttachment
       Properties:
           InternetGatewayId: !Ref InternetGateway
           VpcId: !Ref VPC
           
-
+# ========================
+# Public Subnet Configs
+# ========================
   # Public Subnet 1
   PublicSubnet1:
     Type: AWS::EC2::Subnet
@@ -336,23 +333,11 @@ Outputs:
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-IDs
   
-  PublicSubnetCIDRs:
-    Description: A list of the public subnet CIDRs
-    Value: !Join [ ",", [ !Ref PublicSubnet1CIDR, !Ref PublicSubnet2CIDR ]]
-    Export:
-      Name: !Sub ${ProjectName}-Public-Subnet-CIDRs
-
   PublicSubnet1CIDR:
     Description: Public Subnet 1 CIDR
     Value: !Ref PublicSubnet1CIDR
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-1-CIDR
-
-  PublicSubnet1ID:
-    Description: Public Subnet 1 ID
-    Value: !Ref PublicSubnet1
-    Export:
-      Name: !Sub ${ProjectName}-Public-Subnet-1-ID
 
   PublicSubnet2CIDR:
     Description: Public Subnet 2 CIDR
@@ -360,30 +345,11 @@ Outputs:
     Export:
       Name: !Sub ${ProjectName}-Public-Subnet-2-CIDR
 
-  
-  PublicSubnet2ID:
-    Description: Public Subnet 2 ID
-    Value: !Ref PublicSubnet2
-    Export:
-      Name: !Sub ${ProjectName}-Public-Subnet-2-ID
-
   PrivateSubnets:
     Description: A list of the private subnet IDs
     Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
     Export:
       Name: !Sub ${ProjectName}-Private-Subnet-IDs
-
-  PrivateSubnet1ID:
-    Description: Public Subnet 1 ID
-    Value: !Ref PrivateSubnet1
-    Export:
-      Name: !Sub ${ProjectName}-Private-Subnet-1-ID
-
-  PrivateSubnet2ID:
-    Description: Public Subnet 2 ID
-    Value: !Ref PrivateSubnet2
-    Export:
-      Name: !Sub ${ProjectName}-Private-Subnet-2-ID
 
   WebServerSecurityGroup:
     Description: Security group to be attached to an EC2 Instance.

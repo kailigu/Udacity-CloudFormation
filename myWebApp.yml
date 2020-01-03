@@ -43,8 +43,7 @@ Resources:
           cd /var/www/html
           aws s3 cp s3://udacity-demo-1/udacity.zip .
           unzip -o udacity.zip
-      # Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
-      ImageId: ami-00a54827eb7ffcd3c
+      ImageId: ami-00a54827eb7ffcd3c # Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
       IamInstanceProfile: !Ref EC2InstanceProfileRole
       SecurityGroups:
       - Fn::ImportValue: 
