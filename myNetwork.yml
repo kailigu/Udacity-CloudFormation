@@ -30,6 +30,14 @@ Parameters:
     Description: IP range (CIDR notation) for the public subnet in the first availability zone.
     Type: String
 
+  PrivateSubnet1CIDR:
+    Description: IP range (CIDR notation) for the private subnet in the first Availability Zone
+    Type: String
+    
+  PrivateSubnet2CIDR:
+    Description: IP range (CIDR notation) for the private subnet in the second Availability Zone
+    Type: String
+    
   
 
     
@@ -87,18 +95,10 @@ Resources:
         CidrBlock: !Ref PublicSubnet1CIDR
         MapPublicIpOnLaunch: true
         Tags:
-          - 
-            Key: ProjectName
-            Value: UdacityProject2
-          - 
-            Key: EntityName
-            Value: PublicSubnet1
-          -
-            Key: EntityType
-            Value: Subnet
-          -
-            Key: EntityAttribute
-            Value: Public
+          - Key: Name
+            Value: Public Subnet (AZ1)
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
         
   
   # Public Subnet 2 
@@ -110,46 +110,106 @@ Resources:
         CidrBlock: !Ref PublicSubnet2CIDR
         MapPublicIpOnLaunch: true
         Tags:
-          - 
-            Key: ProjectName
-            Value: UdacityProject2
-          - 
-            Key: EntityName
-            Value: PublicSubnet2
-          -
-            Key: EntityType
-            Value: Subnet
-          -
-            Key: EntityAttribute
-            Value: Public
+          - Key: Name
+            Value: Public Subnet (AZ2)
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
 
- # Route Tables
+# ========================
+# Private Subnet Configs
+# ========================
+
+  # Private Subnet 1 
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+        VpcId: !Ref VPC
+        AvailabilityZone: !Select [ 0, !GetAZs '' ]
+        CidrBlock: !Ref PrivateSubnet1CIDR
+        MapPublicIpOnLaunch: false
+        Tags:
+          - Key: Name
+            Value: Private Subnet (AZ1)
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+        VpcId: !Ref VPC
+        AvailabilityZone: !Select [ 1, !GetAZs '' ]
+        CidrBlock: !Ref PrivateSubnet2CIDR
+        MapPublicIpOnLaunch: false
+        Tags:
+          - Key: Name
+            Value: Private Subnet (AZ2)
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
+
+  NatGateway1EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties: 
+        Domain: vpc
+
+  NatGateway2EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+        Domain: vpc
+
+  NatGateway1: 
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: !GetAtt NatGateway1EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+          - Key: Name
+            Value: NAT Gateway 1
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
+
+  NatGateway2: 
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway2EIP.AllocationId
+      SubnetId: !Ref PublicSubnet2    
+      Tags:
+          - Key: Name
+            Value: NAT Gateway 2
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}        
+  
+  
+# =========================
+# Public Routes
+# =========================
 
   # Public Route Table
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties: 
-        VpcId: !Ref VPC
-        Tags: 
-            - Key: ProjectName 
-              Value: !Ref ProjectName
-            - Key: EntityType
-              Value: RouteTable  
+      VpcId: !Ref VPC
+      Tags:
+          - Key: Name
+            Value: Public Route Table
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}  
 
   # Route to gateway 
   DefaultPublicRoute: 
     Type: AWS::EC2::Route
     Properties: 
-        RouteTableId: !Ref PublicRouteTable
-        DestinationCidrBlock: 0.0.0.0/0
-        GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
 
   # Associate Public Subnet 1 to the Route Table
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-        RouteTableId: !Ref PublicRouteTable
-        SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
   
   # Associate Public Subnet 2 to the Route Table
   PublicSubnet2RouteTableAssociation:
@@ -158,11 +218,73 @@ Resources:
         RouteTableId: !Ref PublicRouteTable
         SubnetId: !Ref PublicSubnet2
 
+
+# =========================
+# Private Routes
+# =========================
+
+  # Private Route Table 1
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref VPC
+      Tags:
+          - Key: Name
+            Value: Private Route Table 1
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
+  
+  # Route to NAT Gateway 1
+  DefaultPrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway1
+  
+  # Associate Private Subnet 1 to the Private Route table 1
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+  # Private Route Table 2
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref VPC
+      Tags:
+          - Key: Name
+            Value: Private Route Table 2
+          - Key: ProjectName
+            Value: !Sub ${ProjectName}
+
+  # Route to NAT Gateway 2
+  DefaultPrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway2
+   
+  # Associate Private Subnet 2 to the Private Route table 2
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+
+# ===========================
+# Security Groups      
+# ===========================
+
   # Load Balancer Security Group
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow HTTP To out Load Balancer
+      GroupDescription: Allow HTTP in Load Balancer
       VpcId: !Ref VPC
       SecurityGroupIngress:
       - IpProtocol: TCP
