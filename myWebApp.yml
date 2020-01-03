@@ -60,16 +60,22 @@ Resources:
   WebAppGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      # A list of subnet IDs for a virtual private cloud (VPC)
-      VPCZoneIdentifier: [subnet-08087d94b56f2af43]
-        # Fn::ImportValue: !Sub "UdacityProject2-Public-Subnet-1-CIDR"
-        # Fn::Join: ['', [ '[' , Fn::ImportValue: !Sub '${ProjectName}-Public-Subnet-CIDRs', ']']]
+      # List Private Subnet IDs
+      VPCZoneIdentifier: 
+        - Fn::ImportValue: UdacityProject2-Private-Subnet-IDs
       LaunchConfigurationName: !Ref WebAppLaunchConfig
       MinSize: '2'
       MaxSize: '6'
       TargetGroupARNs:
       - Ref: WebAppTargetGroup
-  
+      Tags:
+        - Key: Name
+          Value: EC2 Instance
+          PropagateAtLaunch: true
+        - Key: ProjectName
+          Value: !Sub ${ProjectName}
+          PropagateAtLaunch: true
+
   WebAppLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -78,6 +84,11 @@ Resources:
       - Fn::ImportValue: !Sub "UdacityProject2-Public-Subnet-2-ID"
       SecurityGroups:
       - Fn::ImportValue: !Sub "UdacityProject2-LBSecurityGroupID"
+      Tags:
+        - Key: Name
+          Value: Load Balancer
+        - Key: ProjectName
+          Value: !Sub ${ProjectName}
     
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
