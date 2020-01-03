@@ -14,22 +14,17 @@ This needs to be done in an automated fashion so that the infrastructure can be 
 ## Result:
 The ability to create or destroy an entire infrastructure using CloudFormation scripts which builds the Network and Application Infrastructure to deploy an application on an Ubuntu 18 Server.
 
---
-
 ![alt text](https://github.com/sashpetrov/Udacity-CloudFormation/blob/master/Site.png "Site")
-
 
 ### References:
 https://www.udacity.com/
 Nanodegree Program: Cloud Dev Ops Engineer
-
 
 ## Quick-Guide
 The following is required to set up the project:
 * AWS CLI Tool
 * An AWS IAM User to upload your scripts to CloudFormation and create/update stacks
 * Be enrolled into the Udacity Nanodegree program for full project requirements.
-
 
 To configure AWS run the following on your command line after you have installed the AWS CLI tool.
 
@@ -42,7 +37,6 @@ This will ask you for the following:
 * Default output format (leave as none)
 
 You can test whether your account is working but creating a public s3 bucket and running this command:
-
 
 `aws s3 ls`
 
