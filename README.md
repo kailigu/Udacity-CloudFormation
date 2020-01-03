@@ -15,7 +15,7 @@ This needs to be done in an automated fashion so that the infrastructure can be 
 The ability to create or destroy an entire infrastructure using CloudFormation scripts which builds the Network and Application Infrastructure to deploy an application on an Ubuntu 18 Server.
 
 #### Network Architecture Diagram
-![alt text](https://github.com/sashpetrov/Udacity-CloudFormation/blob/master/AWS%20Architecture.pdf "Network Architecture")
+![alt text](https://github.com/sashpetrov/Udacity-CloudFormation/blob/master/AWS%20Architecture.jpeg "Network Architecture")
 
 #### Web site
 ![alt text](https://github.com/sashpetrov/Udacity-CloudFormation/blob/master/Site.png "Site")
